@@ -100,6 +100,7 @@ In case you have questions and/or comments, you can reach us at info&#160;&#x004
 </div>
 <ul id="menu" class="menu" style="left: 100px; top: 100px;">
   <li name="about" automate="ignore" descr="Displays more information about this testsuite (this is no test).">About / Imprint</li>
+  <li name="citests" descr="Read DRM of connected CI+ module and try to get CA client Id via the CI+ SAS resource">CI+ SAS CA client Id</li>
   <li name="appmanager" descr="Start applications, destroy application.">Application manager</li>
   <li name="channels" descr="Performs channel operations on the video/broadcast object.">Get and set channel</li>
   <li name="channellist" descr="Accesses the ChannelList class.">Channel list</li>
