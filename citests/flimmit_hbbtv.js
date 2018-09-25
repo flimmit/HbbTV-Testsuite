@@ -92,18 +92,10 @@ function getDRMIds(){
         for(v in capDRM){
             if(typeof capDRM[i] == 'object' && typeof capDRM[i].getAttribute('DRMSystemID') == 'string'){
                 DRMIds.push(capDRM[i].getAttribute('DRMSystemID'));
-                if(capDRM[i].getAttribute('DRMSystemID') == 'urn:dvb:casystemid:1692'){
-                    foundRight = true;
-                }
             }
             i++;
         }
         setInstr('Found ' + DRMIds.length +' DRM Ids');
-        if(!foundRight){
-            showStatus(false,'Could NOT find the proper CA system id (1692)');
-        } else {
-           showStatus(true,'Could find proper CA system id (1692)');
-        }
     } catch(e){
         showStatus(false,'HbbTV: drm: init: getDRM stuff: ERR: ' + e.message);
     }

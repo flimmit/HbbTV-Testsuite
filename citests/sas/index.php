@@ -45,20 +45,7 @@ window.onload = function() {
 
 
   // S.HbbTV.init();
-  callbackOnResult = function(r,a,b){
-    try{
-      if(b == 0){
-        var s = new Sas(a);
-        showStatus(true, 'Got clientID: ' + s.response);        
-      } else {
-        //error
-      }
 
-
-    }catch(e){
-      showStatus(false, 'Could not understand: ' + r + 'a: ' + a + ' b' + b + ' ERROR : ' + e.message);
-    }
-  }
 
   registerMenuListener(function(liid) {
     if (liid=='exit') {
@@ -109,22 +96,50 @@ if(name=='readDRM'){
       setInstr('Sending DRM message to request the Client ID...');
       var succss = false;
 
+      var reqId = 0;
+      if (!capDRM || capDRM.length < 1) {
+        showStatus(true,'No CA system id\'s available!'); 
+        return;
+      }
+
       try{
-          getDrmObj().onDRMMessageResult = callbackOnResult;
+          getDrmObj().onDRMMessageResult = function(r,a,b) {
+            try {
+                if(b == 0){
+                    var s = new Sas(a);
+                    showStatus(true, 'Got clientID: ' + s.response);        
+                } else { //error
+                    tryCreateSasObject(reqId++);
+                }
+            } catch(e) {
+                showStatus(false, 'Could not understand: ' + r + 'a: ' + a + ' b' + b + ' ERROR : ' + e.message);
+            }
+          },
           getDrmObj().onDRMSystemMessage = function(m, DRMSystemID){ setIntr('DRM message: ' + m);};
           getDrmObj().onDRMSystemStatusChange = function(DRMSystemID){ setIntr('DRM system ID: ' + DRMSystemID);};
         }catch(e) {
             showStatus(false, 'Error occured - could not bind callbacks to DRM agent' + e.message);
             // getDrmObj().addEventListener('onDRMMessageResult', onDrmResult);
         } 
-      try {
-        getDrmObj().sendDRMMessage("application/vnd.oipf.cspg-hexbinary", '81', 'urn:dvb:casystemid:1692');
-        setInstr('DRM message sent. Waiting for response.');
 
-      } catch (e) {
-        // failed
-        showStatus(false, 'Error occured - could not send DRM Message. (' + e.message + ')');
-      }
+        //initial call
+        tryCreateSasObject(reqId);
+
+        //func to start async drm call
+        var tryCreateSasObj = function(idx) {
+            if (idx >= capDRM.length) {
+                showStatus(true,'Unvalid CA system id request! ('+ idx +')');  
+                return;
+            }
+            var curDRM = capDRM[idx];
+            try {
+                getDrmObj().sendDRMMessage("application/vnd.oipf.cspg-hexbinary", '81', curDRM.getAttribute('DRMSystemID'));
+                setInstr('DRM message sent. Waiting for response.');
+            } catch (e) {
+                showStatus(false, 'Error occured - could not send DRM Message. (' + e.message + ')');
+            }
+        };
+
       // if (succss) {
       //   showStatus(true, 'Starting application...');
       //   app.destroyApplication();
