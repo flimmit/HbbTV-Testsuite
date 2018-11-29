@@ -67,24 +67,17 @@ function getDRMIds(){
     try {
         capObj = window.oipfObjectFactory.createCapabilitiesObject();
 
-        console.log(1231231, capObj);
-        if (typeof capObj == 'undefined') {
-            showStatus(false,'HbbTV: not supported!');
-            return;
-        }
-
         if (window.oipfObjectFactory.isObjectSupported('application/oipfGatewayInfo') 
             && typeof window.oipfObjectFactory.createGatewayInfoObject == 'function') {
             gwiObj = window.oipfObjectFactory.createGatewayInfoObject();
             gwiObj.className = gwiObj.className + " hbbtv_plugin";
         }       
-        
         setInstr('HbbTV: drm: init: hasDRM: ' + capObj.hasCapability('+DRM'));
         setInstr(capObj.xmlCapabilitie + 'found');
     } catch(e) {
         showStatus(false,'HbbTV: drm: init: createCapabilitiesObject: ERR: ' + e.message);
+        return;
     }   
-
 
     try{
         var oXml = capObj.xmlCapabilities;
