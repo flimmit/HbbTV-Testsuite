@@ -104,19 +104,18 @@ if(name=='readDRM'){
 
       try{
           getDrmObj().onDRMMessageResult = function(r,a,b) {
-              console.log(r,a,b);
             try {
                 if(b == 0){
                     var s = new Sas(a);
                     showStatus(true, 'Got clientID: ' + s.response);        
-                    callResults[a] = 'success!';
+                    callResults[lastCallDRM] = 'success!';
                 } else { //error
                     showStatus(true, 'failed !');        
-                    callResults[a] = 'fail!';
+                    callResults[lastCallDRM] = 'fail!';
                 }
             } catch(e) {
                 showStatus(false, 'Could not understand: ' + r + 'a: ' + a + ' b' + b + ' ERROR : ' + e.message);
-                callResults[a] = 'fail!';
+                callResults[lastCallDRM] = 'fail!';
             }
             printCallResults();
             tryCreateSasObject(reqId++);
@@ -129,6 +128,7 @@ if(name=='readDRM'){
         } 
 
         //initial call
+        var lastCallDRM = '';
         var callResults = [];
         tryCreateSasObject(reqId);
 
@@ -141,10 +141,11 @@ if(name=='readDRM'){
             var curDRM = capDRM[idx];
             try {
                 var cDRMId = curDRM.getAttribute('DRMSystemID');
+                lastCallDRM = cDRMId;
                 getDrmObj().sendDRMMessage("application/vnd.oipf.cspg-hexbinary", '81', cDRMId);
                 showStatus(false, 'DRM message sent. Waiting for response..');
             } catch (e) {
-                callResults[cDRMId] = 'fail!';
+                callResults[lastCallDRM] = 'fail!';
                 showStatus(false, 'Error occured - could not send DRM Message. (' + e.message + ')');
                 printCallResults();
             }
