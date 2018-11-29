@@ -68,7 +68,7 @@ function getDRMIds(){
         capObj = window.oipfObjectFactory.createCapabilitiesObject();
 
         console.log(capObj);
-        if (typeof capObj != 'object') {
+        if (typeof capObj == 'undefined') {
             showStatus(false,'HbbTV: not supported!');
             return;
         }
