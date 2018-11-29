@@ -104,16 +104,22 @@ if(name=='readDRM'){
 
       try{
           getDrmObj().onDRMMessageResult = function(r,a,b) {
+              console.log(r,a,b);
             try {
                 if(b == 0){
                     var s = new Sas(a);
                     showStatus(true, 'Got clientID: ' + s.response);        
+                    callResults[a] = 'success!';
                 } else { //error
-                    tryCreateSasObject(reqId++);
+                    showStatus(true, 'failed !');        
+                    callResults[a] = 'fail!';
                 }
             } catch(e) {
                 showStatus(false, 'Could not understand: ' + r + 'a: ' + a + ' b' + b + ' ERROR : ' + e.message);
+                callResults[a] = 'fail!';
             }
+            printCallResults();
+            tryCreateSasObject(reqId++);
           },
           getDrmObj().onDRMSystemMessage = function(m, DRMSystemID){ setIntr('DRM message: ' + m);};
           getDrmObj().onDRMSystemStatusChange = function(DRMSystemID){ setIntr('DRM system ID: ' + DRMSystemID);};
@@ -123,6 +129,7 @@ if(name=='readDRM'){
         } 
 
         //initial call
+        var callResults = [];
         tryCreateSasObject(reqId);
 
         //func to start async drm call
@@ -133,12 +140,25 @@ if(name=='readDRM'){
             }
             var curDRM = capDRM[idx];
             try {
-                getDrmObj().sendDRMMessage("application/vnd.oipf.cspg-hexbinary", '81', curDRM.getAttribute('DRMSystemID'));
-                setInstr('DRM message sent. Waiting for response.');
+                var cDRMId = curDRM.getAttribute('DRMSystemID');
+                getDrmObj().sendDRMMessage("application/vnd.oipf.cspg-hexbinary", '81', cDRMId);
+                showStatus(false, 'DRM message sent. Waiting for response..');
             } catch (e) {
+                callResults[cDRMId] = 'fail!';
                 showStatus(false, 'Error occured - could not send DRM Message. (' + e.message + ')');
+                printCallResults();
             }
         };
+
+        var printCallResults = function() {
+            setInstr(
+                'Status Results: <br>' + 
+                callResults.map(function(val, id) {
+                    return id + '...' + val;
+                }).join('<br>')
+            );
+        }
+
 
       // if (succss) {
       //   showStatus(true, 'Starting application...');

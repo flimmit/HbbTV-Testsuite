@@ -99,7 +99,7 @@ function getDRMIds(){
             }
             i++;
         }
-        setInstr('Found DRM Ids: <br>' + DRMIds.join('\r\n'));
+        setInstr('Found DRM Ids: <br>' + DRMIds.join('<br>'));
     } catch(e){
         showStatus(false,'HbbTV: drm: init: getDRM stuff: ERR: ' + e.message);
     }
