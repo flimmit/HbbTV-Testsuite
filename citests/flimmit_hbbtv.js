@@ -66,6 +66,12 @@ function getDRMIds(){
   setInstr('Reading DRM ids');
     try {
         capObj = window.oipfObjectFactory.createCapabilitiesObject();
+
+        if (typeof capObj != 'object') {
+            showStatus(false,'HbbTV: not supported!');
+            return;
+        }
+
         if(window.oipfObjectFactory.isObjectSupported('application/oipfGatewayInfo') 
             && typeof window.oipfObjectFactory.createGatewayInfoObject == 'function') {
             gwiObj = window.oipfObjectFactory.createGatewayInfoObject();
