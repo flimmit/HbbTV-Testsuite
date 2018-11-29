@@ -87,6 +87,7 @@ function getDRMIds(){
     }
     var foundRight = false;
     try{
+        DRMIds = [];
         capDRM = capObj.xmlCapabilities.documentElement.getElementsByTagName('drm');   
         i = 0;
         for(v in capDRM){
@@ -95,7 +96,7 @@ function getDRMIds(){
             }
             i++;
         }
-        setInstr('Found ' + DRMIds.length +' DRM Ids');
+        setInstr('Found DRM Ids: \r\n' + DRMIds.join(','));
     } catch(e){
         showStatus(false,'HbbTV: drm: init: getDRM stuff: ERR: ' + e.message);
     }
