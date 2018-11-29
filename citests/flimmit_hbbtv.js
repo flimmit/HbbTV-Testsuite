@@ -91,9 +91,11 @@ function getDRMIds(){
         capDRM = capObj.xmlCapabilities.documentElement.getElementsByTagName('drm');   
         i = 0;
         for(v in capDRM){
-            var sysId = capDRM[i].getAttribute('DRMSystemID');
-            if (typeof capDRM[i] == 'object' && typeof sysId == 'string' && !sysId.lastIndexOf(':0') != sysId.length -2){
-                DRMIds.push(capDRM[i].getAttribute('DRMSystemID'));
+            if (typeof capDRM[i] == 'object') {
+                var sysId = capDRM[i].getAttribute('DRMSystemID');
+                if (typeof sysId == 'string' && !sysId.lastIndexOf(':0') != sysId.length -2){
+                    DRMIds.push(capDRM[i].getAttribute('DRMSystemID'));
+                }
             }
             i++;
         }
