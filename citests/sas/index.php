@@ -128,7 +128,7 @@ if(name=='readDRM'){
         } 
 
         //initial call
-        var lastCallDRM = '';
+        var lastCallDRMId = '';
         var callResults = [];
         tryCreateSasObject(reqId);
 
@@ -140,9 +140,8 @@ if(name=='readDRM'){
             }
             var curDRM = capDRM[idx];
             try {
-                var cDRMId = curDRM.getAttribute('DRMSystemID');
-                lastCallDRM = cDRMId;
-                getDrmObj().sendDRMMessage("application/vnd.oipf.cspg-hexbinary", '81', cDRMId);
+                lastCallDRM = curDRM.getAttribute('DRMSystemID');
+                getDrmObj().sendDRMMessage("application/vnd.oipf.cspg-hexbinary", '81', lastCallDRM);
                 showStatus(false, 'DRM message sent. Waiting for response..');
             } catch (e) {
                 callResults[lastCallDRM] = 'fail!';
