@@ -91,7 +91,8 @@ function getDRMIds(){
         capDRM = capObj.xmlCapabilities.documentElement.getElementsByTagName('drm');   
         i = 0;
         for(v in capDRM){
-            if(typeof capDRM[i] == 'object' && typeof capDRM[i].getAttribute('DRMSystemID') == 'string'){
+            var sysId = capDRM[i].getAttribute('DRMSystemID');
+            if (typeof capDRM[i] == 'object' && typeof sysId == 'string' && !sysId.endsWith(':0')){
                 DRMIds.push(capDRM[i].getAttribute('DRMSystemID'));
             }
             i++;
