@@ -148,7 +148,7 @@ if(name=='readDRM'){
 
         var printCallResults = function() {
             setInstr(
-                'Status Results: <br>' + callResults.length + 
+                'Status Results: <br>' + 
                 (callResults.map(function(val) {
                     return val.id + '...' + val.msg;
                 }).join('<br>'))
