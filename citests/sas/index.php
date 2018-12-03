@@ -127,13 +127,6 @@ if(name=='readDRM'){
             // getDrmObj().addEventListener('onDRMMessageResult', onDrmResult);
         } 
 
-        //initial call
-        setInstr('next1...');
-        var lastCallDRMId = '';
-        var callResults = [];
-        setInstr('next1a...');
-        tryCreateSasObject(reqId);
-        setInstr('next1b...');
 
         //func to start async drm call
         var tryCreateSasObject = function(idx) {
@@ -167,6 +160,15 @@ if(name=='readDRM'){
                 }).join('<br>')
             );
         }
+
+        //initial call
+        setInstr('next1...');
+        var lastCallDRMId = '';
+        var callResults = [];
+        setInstr('next1a...');
+        tryCreateSasObject(reqId);
+        setInstr('next1b...');
+
 
 
       // if (succss) {
