@@ -135,13 +135,18 @@ if(name=='readDRM'){
 
         //func to start async drm call
         var tryCreateSasObject = function(idx) {
+        setInstr('next2...');
             if (idx >= capDRM.length) {
                 showStatus(true,'Unvalid CA system id request! ('+ idx +')');  
                 return;
             }
+        setInstr('next3...');
             var curDRM = capDRM[idx];
+        setInstr('next4...');
             try {
                 lastCallDRM = curDRM.getAttribute('DRMSystemID');
+
+        setInstr('next5...');
                 showStatus(false, 'sending message for (' + lastCallDRM + ')..');
                 getDrmObj().sendDRMMessage("application/vnd.oipf.cspg-hexbinary", '81', lastCallDRM);
                 showStatus(false, 'DRM message sent. Waiting for response..');
