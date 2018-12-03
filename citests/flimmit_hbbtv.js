@@ -85,6 +85,7 @@ function getDRMIds(){
     } catch(e){
         showStatus(false,'reading xmlCapabilities: ERR: ' + e.message);
     }
+    //var lookupDRMId = ["urn:dvb:casystemid:1692", "urn:dvb:casystemid:1762"];
     var lookupDRMId = ["urn:dvb:casystemid:1692"];
     var foundRight = false;
     try{
@@ -94,7 +95,7 @@ function getDRMIds(){
         for(v in capDRM){
             if (typeof capDRM[i] == 'object') {
                 var sysId = capDRM[i].getAttribute('DRMSystemID');
-                if (typeof sysId == 'string' && sysId.lastIndexOf(':0') != sysId.length -2 && DRMIds.indexOf(sysId) < 0 && lookupDRMId.indexOf(sysId) > -1){
+                if (typeof sysId == 'string' && sysId.lastIndexOf(':0') != sysId.length -2 && DRMIds.indexOf(sysId) < 0 && lookupDRMId.indexOf()){
                     DRMIds.push(sysId);
                 }
             }
