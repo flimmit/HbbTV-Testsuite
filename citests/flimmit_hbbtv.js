@@ -93,8 +93,8 @@ function getDRMIds(){
         for(v in capDRM){
             if (typeof capDRM[i] == 'object') {
                 var sysId = capDRM[i].getAttribute('DRMSystemID');
-                if (typeof sysId == 'string' && sysId.lastIndexOf(':0') != sysId.length -2){
-                    DRMIds.push(capDRM[i].getAttribute('DRMSystemID'));
+                if (typeof sysId == 'string' && sysId.lastIndexOf(':0') != sysId.length -2 && !DRMIds.indexOf(sysId) < 0){
+                    DRMIds.push(sysId);
                 }
             }
             i++;

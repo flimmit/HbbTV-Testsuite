@@ -119,7 +119,7 @@ if(name=='readDRM'){
             }
             printCallResults();
             tryCreateSasObject(reqId++);
-          },
+          };
           getDrmObj().onDRMSystemMessage = function(m, DRMSystemID){ setIntr('DRM message: ' + m);};
           getDrmObj().onDRMSystemStatusChange = function(DRMSystemID){ setIntr('DRM system ID: ' + DRMSystemID);};
         }catch(e) {
