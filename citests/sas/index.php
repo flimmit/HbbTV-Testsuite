@@ -131,7 +131,7 @@ if(name=='readDRM'){
         //func to start async drm call
         var tryCreateSasObject = function(idx) {
             if (idx >= DRMIds.length) {
-                showStatus(true,'Unvalid CA system id request! ('+ idx +')');  
+                printCallResults();
                 return;
             }
             lastCallDRM = DRMIds[idx];
