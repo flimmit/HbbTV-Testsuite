@@ -85,7 +85,6 @@ function getDRMIds(){
     } catch(e){
         showStatus(false,'reading xmlCapabilities: ERR: ' + e.message);
     }
-    var lookupDRMId = ["urn:dvb:casystemid:1692", "urn:dvb:casystemid:1762"];
     var foundRight = false;
     try{
         DRMIds = [];
