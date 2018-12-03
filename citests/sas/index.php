@@ -128,6 +128,7 @@ if(name=='readDRM'){
         } 
 
         //initial call
+        setInstr('next1...');
         var lastCallDRMId = '';
         var callResults = [];
         tryCreateSasObject(reqId);
