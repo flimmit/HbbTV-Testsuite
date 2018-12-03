@@ -108,7 +108,7 @@ if(name=='readDRM'){
                 if(b == 0){
                     var s = new Sas(a);
                     showStatus(true, 'Got clientID: ' + s.response);        
-                    callResults[lastCallDRM] = 'success!';
+                    callResults[lastCallDRM] = s.response;
                 } else { //error
                     showStatus(true, 'failed !');        
                     callResults[lastCallDRM] = 'fail!';
@@ -148,10 +148,10 @@ if(name=='readDRM'){
 
         var printCallResults = function() {
             setInstr(
-                'Status Results: <br>' + 
-                callResults.map(function(val, id) {
+                'Status Results: <br>' + callResults.length + 
+                (callResults.map(function(val, id) {
                     return id + '...' + val;
-                }).join('<br>')
+                }).join('<br>'))
             );
         }
 
