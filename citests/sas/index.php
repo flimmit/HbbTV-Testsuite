@@ -108,14 +108,14 @@ if(name=='readDRM'){
                 if(b == 0){
                     var s = new Sas(a);
                     showStatus(true, 'Got clientID: ' + s.response);        
-                    callResults[lastCallDRM] = s.response;
+                    callResults.push({id: lastCallDRM, msg: s.response});
                 } else { //error
                     showStatus(true, 'failed !');        
-                    callResults[lastCallDRM] = 'fail!';
+                    callResults.push({id: lastCallDRM, msg: 'fail!'});
                 }
             } catch(e) {
                 showStatus(false, 'Could not understand: ' + r + 'a: ' + a + ' b' + b + ' ERROR : ' + e.message);
-                callResults[lastCallDRM] = 'fail!';
+                callResults.push({id: lastCallDRM, msg: 'fail!'});
             }
             printCallResults();
             tryCreateSasObject(reqId++);
@@ -149,8 +149,8 @@ if(name=='readDRM'){
         var printCallResults = function() {
             setInstr(
                 'Status Results: <br>' + callResults.length + 
-                (callResults.map(function(val, id) {
-                    return id + '...' + val;
+                (callResults.map(function(val) {
+                    return val.id + '...' + val.msg;
                 }).join('<br>'))
             );
         }
