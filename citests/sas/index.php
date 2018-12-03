@@ -118,7 +118,7 @@ if(name=='readDRM'){
                 callResults[lastCallDRM] = 'fail!';
             }
             printCallResults();
-            tryCreateSasObject(reqId++);
+            //tryCreateSasObject(reqId++);
           };
           getDrmObj().onDRMSystemMessage = function(m, DRMSystemID){ setIntr('DRM message: ' + m);};
           getDrmObj().onDRMSystemStatusChange = function(DRMSystemID){ setIntr('DRM system ID: ' + DRMSystemID);};
