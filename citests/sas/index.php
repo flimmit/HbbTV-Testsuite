@@ -98,12 +98,10 @@ if(name=='readDRM'){
 
       var reqId = 0;
       if (!DRMIds || DRMIds.length < 1) {
-      setInstr('1');
         showStatus(true,'No CA system id\'s available!'); 
         return;
       }
 
-      setInstr('2');
       try{
           getDrmObj().onDRMMessageResult = function(r,a,b) {
             try {
@@ -132,6 +130,7 @@ if(name=='readDRM'){
 
         //func to start async drm call
         var tryCreateSasObject = function(idx) {
+      setInstr('4');
             if (idx >= DRMIds.length) {
                 showStatus(true,'Unvalid CA system id request! ('+ idx +')');  
                 return;
@@ -163,6 +162,7 @@ if(name=='readDRM'){
         var lastCallDRMId = '';
         var callResults = [];
         reqId = 0;
+      setInstr('3');
         tryCreateSasObject(reqId);
 
 
