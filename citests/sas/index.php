@@ -134,14 +134,8 @@ if(name=='readDRM'){
                 showStatus(true,'Unvalid CA system id request! ('+ idx +')');  
                 return;
             }
-      setInstr('5');
-            var curDRM = DRMIds[idx];
-      setInstr('6');
+            lastCallDRM = DRMIds[idx];
             try {
-      setInstr(curDRM);
-                lastCallDRM = curDRM.getAttribute('DRMSystemID');
-      setInstr('8')
-
                 showStatus(false, 'sending message for (' + lastCallDRM + ')..');
                 getDrmObj().sendDRMMessage("application/vnd.oipf.cspg-hexbinary", '81', lastCallDRM);
                 showStatus(false, 'DRM message sent. Waiting for response..');
@@ -165,7 +159,6 @@ if(name=='readDRM'){
         var lastCallDRMId = '';
         var callResults = [];
         reqId = 0;
-      setInstr('3');
         tryCreateSasObject(reqId);
 
 
