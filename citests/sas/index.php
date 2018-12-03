@@ -140,8 +140,8 @@ if(name=='readDRM'){
                 getDrmObj().sendDRMMessage("application/vnd.oipf.cspg-hexbinary", '81', lastCallDRM);
                 showStatus(false, 'DRM message sent. Waiting for response..');
             } catch (e) {
-                callResults[lastCallDRM] = 'fail!';
-                showStatus(false, 'Error occured - could not send DRM Message. (' + e.message + ')');
+                callResults.push({id: lastCallDRM, msg: 'fail! (' + e.message + ')'});
+                showStatus(false, 'Error occured - could not send DRM Message.);
                 printCallResults();
             }
         };
