@@ -138,9 +138,9 @@ if(name=='readDRM'){
             var curDRM = DRMIds[idx];
       setInstr('6');
             try {
-      setInstr('7');
+      setInstr(curDRM);
                 lastCallDRM = curDRM.getAttribute('DRMSystemID');
-      setInstr('8');
+      setInstr('8')
 
                 showStatus(false, 'sending message for (' + lastCallDRM + ')..');
                 getDrmObj().sendDRMMessage("application/vnd.oipf.cspg-hexbinary", '81', lastCallDRM);
