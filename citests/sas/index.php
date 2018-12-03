@@ -97,7 +97,7 @@ if(name=='readDRM'){
       var succss = false;
 
       var reqId = 0;
-      if (!DRMIds || DRMIds.length < 1) {
+      if (!capDRM || capDRM.length < 1) {
         showStatus(true,'No CA system id\'s available!'); 
         return;
       }
@@ -134,11 +134,11 @@ if(name=='readDRM'){
 
         //func to start async drm call
         var tryCreateSasObject = function(idx) {
-            if (idx >= DRMIds.length) {
+            if (idx >= capDRM.length) {
                 showStatus(true,'Unvalid CA system id request! ('+ idx +')');  
                 return;
             }
-            var curDRM = DRMIds[idx];
+            var curDRM = capDRM[idx];
             try {
                 lastCallDRM = curDRM.getAttribute('DRMSystemID');
                 getDrmObj().sendDRMMessage("application/vnd.oipf.cspg-hexbinary", '81', lastCallDRM);
