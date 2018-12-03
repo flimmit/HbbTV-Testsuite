@@ -93,7 +93,7 @@ if(name=='readDRM'){
         showStatus(false, 'Error occured - could not read DRM ids. (' + e.message + ')');
     }
 } else if (name=='clientid') {
-      setInstr('Sending DRM requests for Client IDs...');
+      setInstr('Sending DRM requests for Client IDs...' + DRMIds);
       var succss = false;
 
       var reqId = 0;
