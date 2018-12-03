@@ -94,15 +94,16 @@ if(name=='readDRM'){
     }
 } else if (name=='clientid') {
       setInstr('Sending DRM requests for Client IDs...');
-      setInstr(DRMIds.constructor);
       var succss = false;
 
       var reqId = 0;
       if (!DRMIds || DRMIds.length < 1) {
+      setInstr('1');
         showStatus(true,'No CA system id\'s available!'); 
         return;
       }
 
+      setInstr('2');
       try{
           getDrmObj().onDRMMessageResult = function(r,a,b) {
             try {
