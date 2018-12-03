@@ -131,7 +131,9 @@ if(name=='readDRM'){
         setInstr('next1...');
         var lastCallDRMId = '';
         var callResults = [];
+        setInstr('next1a...');
         tryCreateSasObject(reqId);
+        setInstr('next1b...');
 
         //func to start async drm call
         var tryCreateSasObject = function(idx) {
