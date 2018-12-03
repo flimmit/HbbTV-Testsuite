@@ -93,7 +93,7 @@ if(name=='readDRM'){
         showStatus(false, 'Error occured - could not read DRM ids. (' + e.message + ')');
     }
 } else if (name=='clientid') {
-      setInstr('Sending DRM message to request the Client ID...');
+      setInstr('Sending DRM requests for Client IDs...');
       var succss = false;
 
       var reqId = 0;
@@ -141,6 +141,7 @@ if(name=='readDRM'){
             var curDRM = capDRM[idx];
             try {
                 lastCallDRM = curDRM.getAttribute('DRMSystemID');
+                showStatus(false, 'sending message for (' + lastCallDRM + ')..');
                 getDrmObj().sendDRMMessage("application/vnd.oipf.cspg-hexbinary", '81', lastCallDRM);
                 showStatus(false, 'DRM message sent. Waiting for response..');
             } catch (e) {
