@@ -141,7 +141,7 @@ if(name=='readDRM'){
                 showStatus(false, 'DRM message sent. Waiting for response..');
             } catch (e) {
                 callResults.push({id: lastCallDRM, msg: 'fail! (' + e.message + ')'});
-                showStatus(false, 'Error occured - could not send DRM Message.);
+                showStatus(false, 'Error occured - could not send DRM Message.');
                 printCallResults();
             }
         };
