@@ -100,7 +100,7 @@ function getDRMIds(){
             i++;
         }
         DRMIds = DRMIds.reverse(); //last Ids probably most interesting
-        setInstr('Found DRM Ids: <br>' + DRMIds.join('<br>'));
+        setInstr('Found DRM Ids: <br />' + DRMIds.join('<br />'));
     } catch(e){
         showStatus(false,'HbbTV: drm: init: getDRM stuff: ERR: ' + e.message);
     }
