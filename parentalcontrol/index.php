@@ -83,7 +83,7 @@ function runStep(name) {
       showStatus(false, 'Current threshold has invalid scheme');
       return;
     }
-    if (!rating.hasOwnProperty('name') || !rating.hasOwnProperty('value')) {
+    if (!('name' in rating) || !('value' in rating)) {
       showStatus(false, 'The returned rating scheme threshold does not have both the name and value properties');
       return;
     }
@@ -95,7 +95,7 @@ function runStep(name) {
       showStatus(false, 'Current threshold rating name is not string representation of value attribute');
       return;
     }
-    showStatus(true, 'Current rating threshold is '+rating.value+' (age '+rating.value+' years), labels='+rating.labels+', region='+rating.region);
+    showStatus(true, 'Current rating threshold is '+rating.value+' (age '+(rating.value?(rating.value+3):rating.value)+' years), labels='+rating.labels+', region='+rating.region);
   }
 }
 //]]>

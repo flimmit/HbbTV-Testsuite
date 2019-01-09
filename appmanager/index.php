@@ -68,7 +68,7 @@ function runStep(name) {
         // failed
       }
       if (succss) {
-        showStatus(true, 'Starting application...');
+        showAppStartStatus(true, 'Starting application...');
         app.destroyApplication();
       } else {
         showStatus(false, 'Starting application via appmgr failed');
@@ -87,7 +87,7 @@ function runStep(name) {
         // failed
       }
       if (succss) {
-        showStatus(true, 'Starting application...');
+        showAppStartStatus(true, 'Starting application...');
         app.destroyApplication();
       } else {
         showStatus(false, 'Starting application via appmgr failed');
@@ -122,14 +122,15 @@ function runStep(name) {
       return;
     }
     try {
-      if (document.getElementById('video').currentChannel.idType===12) {
+      var channelIdType = document.getElementById('video').currentChannel.idType;
+      if (channelIdType===12 || channelIdType===16) {
         params = '?dvb=t';
       }
     } catch (e) {
     }
     try {
       if (app.createApplication('xmlait.php/ait.aitx'+params, false)) { // ETSI TS 102 809 requires extension .aitx
-        showStatus(true, 'Starting of application via XML succeeded, please stand by...');
+        showAppStartStatus(true, 'Starting of application via XML succeeded, please stand by...');
         app.destroyApplication();
       } else {
         showStatus(false, 'Starting of application via XML failed.');
@@ -180,7 +181,7 @@ function runStep(name) {
       } catch (e) {
         // failed
       }
-      showStatus(succss, 'Starting application via appmgr '+(succss?'succeeded':'failed'));
+      showAppStartStatus(succss, 'Starting application via appmgr '+(succss?'succeeded':'failed'));
       if (succss) {
         app.destroyApplication();
       }

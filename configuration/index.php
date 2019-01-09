@@ -36,6 +36,8 @@ function runStep(name) {
   var config = oipfcfg.configuration;
   var result;
   var attrib;
+  var i;
+  var mr;
   var valid = false;
   try {
     if (name=='audlang') {
@@ -54,10 +56,75 @@ function runStep(name) {
       attrib = 'countryId';
       result = config.countryId;
       valid = validateLanguageList(result) && result.length==3;
+    } else if (name=='subtitlesEnabled') {
+      attrib = 'subtitlesEnabled';
+      result = config.subtitlesEnabled;
+      valid = (typeof result === 'boolean');
+    } else if (name=='timeshiftSynchronized') {
+      attrib = 'timeShiftSynchronized';
+      result = config.timeShiftSynchronized;
+      valid = (typeof result === 'boolean');
+    } else if (name=='audioDescriptionEnabled') {
+      attrib = 'audioDescriptionEnabled';
+      result = config.audioDescriptionEnabled;
+      valid = (typeof result === 'boolean');
+    } else if (name=='networkIds') {
+      attrib = 'dtt_network_ids';
+      mr = config.dtt_network_ids;
+      if (mr === undefined) {
+        showStatus(2, attrib+' = '+mr+'<br />Note: If any DTT channels are present in the channel list, then the test is failed.');
+        return;
+      }
+      valid = false;
+      if (mr && mr.length) {
+        result = '';
+        for (i=0; i<mr.length; i++) {
+          valid |= mr[i]===serviceNetworkId;
+          result += (result?', ':'') + mr[i];
+        }
+        result = '['+result+']';
+      } else {
+        result = mr;
+      }
+    } else if (name=='distinctiveIdentifier') {
+      attrib = 'deviceId';
+      result = config.deviceId;
+      mr = (typeof result === 'string') ? result.match(/#[1-5]|([a-z0-9\-]+)/gi) : null;
+      valid = (mr && mr.length == 1 && mr[0] == result);
+    } else if (name=='requestDistinctiveIdentifier') {
+      if (!config.deviceId || (typeof config.deviceId !== 'string') || config.deviceId.substring(0, 1)!=='#') {
+        showStatus(true, 'No need to request access to distinctive identifier, as deviceID is not status code: '+config.deviceId);
+        return;
+      }
+      if (config.deviceId==='#2' || config.deviceId==='#3' || config.deviceId==='#4' || config.deviceId==='#5') {
+        showStatus(2, 'Access to distinctive identifier will not succeed, as status code is '+config.deviceId+', please change settings of your terminal so access can be granted');
+        return;
+      }
+      i = setTimeout(function() {
+        i = null;
+        showStatus(false, 'Callback not called, timeout after 30 seconds');
+      }, 30000);
+      try {
+        config.requestAccessToDistinctiveIdentifier(function() {
+          if (!i) {
+            return;
+          }
+          clearTimeout(i);
+          if (!config.deviceId || (typeof config.deviceId !== 'string') || config.deviceId.substring(0, 1)==='#') {
+            showStatus(false, 'Access to distinctive identifier failed, status code '+config.deviceId);
+          } else {
+            showStatus(true, 'Access to distinctive identifier succeded, deviceid = '+config.deviceId);
+          }
+        });
+      } catch (ex) {
+        clearTimeout(i);
+        showStatus(false, 'Unexpected exception when trying to call config.requestAccessToDistinctiveIdentifier: '+ex);
+      }
+      return;
     } else if (name=="localSysDeviceID") {
       attrib = 'deviceID';
       result = oipfcfg.localSystem.deviceID;
-      valid = result.length > 0;
+      valid = (typeof result === "undefined") || result.length > 0 || "" === result;
     } else if (name=="localSysModelName") {
       attrib = 'modelName';
       result = oipfcfg.localSystem.modelName;
@@ -77,7 +144,7 @@ function runStep(name) {
     } else if (name=="localSysSerialNumber") {
       attrib = 'serialNumber';
       result = oipfcfg.localSystem.serialNumber;
-      valid = result.length > 0;
+      valid = (typeof result === "undefined") || result.length > 0 || "" === result;
     } else {
       showStatus(false, 'Unknown test name '+name);
       return;
@@ -122,10 +189,16 @@ function validateLanguageList(txt) {
 <div class="txtdiv txtlg" style="left: 110px; top: 60px; width: 500px; height: 30px;">MIT-xperts HBBTV tests</div>
 <div id="instr" class="txtdiv" style="left: 700px; top: 110px; width: 400px; height: 360px;"></div>
 <ul id="menu" class="menu" style="left: 100px; top: 100px;">
-  <li name="audlang">Show preferred audio language</li>
-  <li name="sublang">Show preferred subtitle language</li>
-  <li name="country">Show country ID</li>
-  <li name="uilang">Show preferred UI lang (HbbTV 1.2)</li>
+  <li name="audlang">preferredAudioLanguage</li>
+  <li name="sublang">preferredSubtitleLanguage</li>
+  <li name="country">countryId</li>
+  <li name="uilang">preferredUILanguage (HbbTV 1.2.1)</li>
+  <li name="subtitlesEnabled">subtitlesEnabled (HbbTV 1.4.1)</li>
+  <li name="timeshiftSynchronized">timeShiftSynchronized (HbbTV 1.4.1)</li>
+  <li name="audioDescriptionEnabled">audioDescriptionEnabled (HbbTV 1.4.1)</li>
+  <li name="networkIds">dtt_network_ids (HbbTV 1.4.1)</li>
+  <li name="distinctiveIdentifier">distinctiveIdentifier (HbbTV 1.4.1)</li>
+  <li name="requestDistinctiveIdentifier">Request identifier (HbbTV 1.4.1)</li>
   <li name="localSysDeviceID" class="Optional 7.3.3">Optional 7.3.3: localSys deviceID</li>
   <li name="localSysModelName" class="Optional 7.3.3">Optional 7.3.3: localSys modelName</li>
   <li name="localSysVendorName" class="Optional 7.3.3">Optional 7.3.3: localSys vendorName</li>

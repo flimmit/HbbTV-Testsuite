@@ -9,7 +9,7 @@ openDocument();
 //<![CDATA[
 var isvidtyp = false;
 var timr = null;
-var eventNames = ["ended", "error", "loadeddata", "loadedmetadata", "loadstart", "pause", "play", "playing", "ratechange", "seeked", "seeking"];
+var eventNames = ["ended", "error", "loadeddata", "loadedmetadata", "loadstart", "pause", "play", "playing", "ratechange", "seeked", "seeking", "waiting"];
 var capturedEvents = {};
 var testPrefix = <?php echo json_encode(getTestPrefix()); ?>;
 window.onload = function() {
@@ -134,26 +134,61 @@ function vidduration(millis) {
     showStatus(false, 'duration check failed.');
   }
 }
+function moveVideoAway(alwaysCleanup) {
+  var vid = document.getElementById('video');
+  var ce, cntnr = document.getElementById('oldvidcontainer');
+  if (!vid) {
+    return; // no video to be removed
+  }
+  if (isvidtyp) {
+    // HTML5 video is simple:
+    vid.innerHTML = ""; // remove sources
+    try {
+      vid.load(); // This will release resources for the HTML5 video
+    } catch (ignore) {
+    }
+    if (!alwaysCleanup) {
+      return;
+    }
+  }
+  while (ce = cntnr.firstChild) {
+    try {
+      ce.release();
+    } catch (ignore) {
+    }
+    cntnr.removeChild(ce);
+  }
+  if (isvidtyp) {
+    return;
+  }
+  if (!vid) {
+    return;
+  }
+  // vid is video/broadcast object:
+  // first, move it out of the way, to make room for the new video object
+  vid.parentElement.removeChild(vid);
+  vid.removeAttribute('id');
+  if (!alwaysCleanup) {
+    cntnr.appendChild(vid);
+  }
+  // now, stop the video to release resources for HTML5 video (do NOT release it)
+  try {
+    vid.stop();
+  } catch (ignore) {
+    // ignore
+  }
+  if (alwaysCleanup) {
+    try {
+      vid.release();
+    } catch (ignore) {
+      // ignore
+    }
+  }
+}
 function govid(typ, beforePlay) {
   var elem = document.getElementById('vidcontainer');
-  var oldvid = document.getElementById('video');
+  moveVideoAway(!typ);
   isvidtyp = typ;
-  try {
-    oldvid.stop(); // This will stop the broadcast video, but will throw an (ignored) exception for the streaming video
-  } catch (e) {
-    // ignore
-  }
-  try {
-    oldvid.release(); // This will release the broadcast video, but will throw an (ignored) exception for the streaming video
-  } catch (e) {
-    // ignore
-  }
-  try {
-    oldvid.innerHTML = "";
-    oldvid.load(); // This will release resources for the HTML5 video, but will throw an (ignored) exception for the broadcast video
-  } catch (e) {
-    // ignore
-  }
   var ihtml;
   if (typ) {
     ihtml = '<video id="video" style="position: absolute; left: 600px; top: 250px; width: 160px; height: 90px;"><'+'/video>';
@@ -171,16 +206,16 @@ function govid(typ, beforePlay) {
     var videlem = document.getElementById('video');
     if (videlem) {
       if (typ) {
-	phase = 2;
+        phase = 2;
         if (beforePlay) {
           beforePlay(videlem);
         }
         videlem.innerHTML = '<source src="<?php echo getMediaURL(); ?>timecode.php/video.mp4"><'+'/source>';
-	phase = 3;
+        phase = 3;
         videlem.play();
         succss = true;
       } else {
-	phase = 4;
+        phase = 4;
         videlem.bindToCurrentChannel();
         succss = true;
       }
@@ -204,7 +239,11 @@ function clearEvents() {
 function testEvents() {
   var i, stages, checkStage, checkEvents, elistener, beforePlay, videoElement = null;
   elistener = function(event) {
-    capturedEvents[event.type]++;
+    var etype = event.type;
+    if (etype==="waiting" && !capturedEvents.playing) {
+      return; // ignore waiting before playback started
+    }
+    capturedEvents[etype]++;
   };
   beforePlay = function(videlem) {
     videoElement = videlem;
@@ -217,7 +256,7 @@ function testEvents() {
     return; // setting up video failed
   }
   checkEvents = function(check) {
-    var ename, expct, actl, typ;
+    var ename, expct, actl, typ, enamesplit;
     for (ename in check) {
       if (!check.hasOwnProperty(ename)) {
         continue;
@@ -228,7 +267,13 @@ function testEvents() {
       }
       typ = expct.substring(0, 1);
       expct = parseInt(expct.substring(1), 10);
-      actl = capturedEvents[ename]||0;
+      enamesplit = ename.split('-');
+      if (enamesplit.length===2) {
+        actl = capturedEvents[enamesplit[0]]||0;
+        actl -= capturedEvents[enamesplit[1]]||0;
+      } else {
+        actl = capturedEvents[ename]||0;
+      }
       if ((typ==='='&&actl===expct) || (typ==='<'&&actl<expct) || (typ==='>'&&actl>expct)) {
         continue; // value is OK
       }
@@ -240,10 +285,10 @@ function testEvents() {
   var endCount = 0;
   stages = [
     {"descr":"Waiting for video to start...", "check":function() {
-      if (!capturedEvents.playing) {
+      if (!capturedEvents.playing || videoElement.readyState<3) {
         return "WAIT";
       }
-      return checkEvents({"loadeddata":">0", "loadedmetadata":">0", "loadstart":"=1", "pause":"=0", "play":"=1", "playing":"=1", "ratechange":"=0", "seeked":"=0", "seeking":"=0"});
+      return checkEvents({"loadeddata":">0", "loadedmetadata":">0", "loadstart":"=1", "pause":"=0", "play":"=1", "playing":">0", "ratechange":"=0", "seeked":"=0", "seeking":"=0", "playing-waiting":"=1"});
     } },
     {"descr":"Pausing video...", "pause":3000, "check":function() { clearEvents(); videoElement.pause(); return "OK"; } },
     {"descr":"Waiting for video to pause...", "check":function() {
@@ -254,14 +299,14 @@ function testEvents() {
     } },
     {"descr":"Resuming video...", "pause":3000, "check":function() { clearEvents(); videoElement.play(); return "OK"; } },
     {"descr":"Waiting for video to resume...", "check":function() {
-      if (!capturedEvents.playing) {
+      if (!capturedEvents.playing || videoElement.readyState<3) {
         return "WAIT";
       }
       return checkEvents({"loadeddata":"=0", "loadedmetadata":"=0", "loadstart":"=0", "pause":"=0", "play":"=1", "playing":"=1", "ratechange":"=0", "seeked":"=0", "seeking":"=0"});
     } },
     {"descr":"Seeking video...", "pause":3000, "check":function() { clearEvents(); videoElement.currentTime = 240; return "OK"; } },
     {"descr":"Waiting for seek to complete...", "check":function() {
-      if (videoElement.seeking) {
+      if (videoElement.seeking || videoElement.readyState<3) {
         return "WAIT";
       }
       return checkEvents({"loadeddata":"?", "loadedmetadata":"?", "loadstart":"?", "pause":"=0", "play":"=0", "playing":"?", "ratechange":"=0", "seeked":"=1", "seeking":"=1"});
@@ -333,6 +378,7 @@ function testEvents() {
 
 <div style="left: 0px; top: 0px; width: 1280px; height: 720px; background-color: #132d48;" />
 
+<div id="oldvidcontainer" style="left: 0px; top: 0px; width: 1280px; height: 720px;"></div>
 <div id="vidcontainer" style="left: 0px; top: 0px; width: 1280px; height: 720px;"></div>
 <?php echo appmgrObject(); ?>
 <div style="left: 0px; top: 0px; width: 1280px; height: 720px;">
