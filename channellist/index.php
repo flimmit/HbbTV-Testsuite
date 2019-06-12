@@ -41,7 +41,7 @@ function runStep(name) {
       var txt = 'Channel list items:';
       for (var i=0; i<lst.length && i<20; i++) {
         var ch = lst.item(i);
-        txt += '<br />'+i+': '+ch.name;
+        txt += '<br />'+i+': '+ch.name + ' / ' + ch.sid;
       }
       showStatus(true, 'accessing channel list succeeded.');
       setInstr(txt);
