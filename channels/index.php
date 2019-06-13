@@ -273,14 +273,14 @@ openDocument();
                 }
 
                 if (channelToSwitch === null) {
-                    showStatus(false, 'Could not find channel with SID' + channelSid);
+                    showStatus(false, 'Could not find channel with SID: ' + channelSid);
                 } else {
                     // channelType, ccid, nid, dsd, onid, tsid, sid, r
                     try {
                         vid.setChannel(channelToSwitch, false)
                         showStatus(true, 'Will switch to  new channel: ' + channelToSwitch.name + '(SID: ' + channelToSwitch.sid + ')');
                     } catch (e) {
-                        throw new Error('Could not switch to channel ' + channelToSwitch.name + ' error:' + e.message)
+                        showStatus(false, 'Could not switch to channel ' + channelToSwitch.name + ' error: <br />' + e.message)
                     }
                 }
 
